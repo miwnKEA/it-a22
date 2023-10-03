@@ -1,0 +1,429 @@
+/* :root is the same as HTML, but works for non-web pages like XML. Just learning new things.
+the --color-primary and others are CSS variables, which we access later. 
+*/
+
+:root {
+    --bgcolor-block: #fffcfa; /* bg color for fenced code blocks and such */
+    --color-header: #007ea9;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
+    --color-hilite: #b50000;  /* was red, but this avoids WAVE contrast errors */ 
+}
+/* Shared style for cs304 web pages. */
+
+img {
+    max-width: 100%;
+}
+
+ul, ol {
+    padding-left: 2em;
+}
+
+/* I don't like how Skeleton does lists */
+
+ul, ol {
+    list-style-position: outside;
+}
+
+ul { list-style-type: disc }
+ul ul { list-style-type: circle }
+ul ul ul { list-style-type: square }
+ol { list-style-type: arabic }
+ol ol { list-style-type: lower-alpha }
+
+
+/* The logo appears in a hyperlink on the top of most pages */
+.logo {
+    text-decoration: none;
+    float: left;
+}
+
+/* I only use <hr> when I want to have a good break in the page for printing */
+
+hr {
+    page-break-after: always;
+}
+
+
+/* Useful stuff in pages: */
+
+pre {
+    margin: 2ex 1em;
+    border: 2px solid black;
+    padding: 2ex 1em;
+    border-radius: 25px;
+}
+
+span.cmd {
+    font-weight: bold;
+    color: maroon;
+}
+
+/* intended to mimic the pre that markdown does for fenced code blocks */
+blockquote { 
+	background-color: #fffdfb;
+	padding: 1em;
+	margin: 0.5em 0;
+	overflow: auto;
+	border: 2px solid black;
+	border-radius: 25px;
+}
+
+/* code examples often get wide. This allows the code to wrap. If I also
+add line numbers, that should make the code readable without excessive
+left/right scrolling. This is marked important so that it overrides the
+setting in prism.css. Editing that file would be another way to do
+this.
+
+Actually, this doesn't work. the line-numbers prism plugin specifically
+looks for the white-space:pre-wrap as an inline-style instead of via a
+class. I'll have to modify codehilite again. */
+
+code {
+    white-space:pre-wrap;
+}
+
+aside {
+    border: 1px solid gray;
+    margin-left: 3em;
+    padding: 2px 2em;
+}
+
+/* divides the reading from the class material */
+
+h2.div {
+    padding: 3ex;
+    border: 3px solid blue;
+    background: yellow;
+    }
+
+h2.div:after {
+    content: " You may stop reading here. The rest of this material is to be used in class."
+}
+
+@media screen {
+    a.hiddenlink {
+        color: black;
+        text-decoration: none;
+    }
+
+    a.hiddenlink:hover {
+        cursor: default;
+    }
+}
+
+figure {
+    border: 2px solid deepskyblue;
+    padding: 2ex 2em;
+    text-align: center;  /* center images and such */
+}
+
+figcaption {
+    width: 80%;
+    margin: 2ex auto;
+    font-size: larger;
+    text-align: left;
+}
+
+
+/* ================================================================ */
+
+
+@media screen {
+
+body {	
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 18px;  /* 1em once yielded a tiny 10px font on my browser. */
+   	color: black;
+        background-color: white;
+        width: auto;
+        /* max-width: 65em; */
+        margin: 0px auto;
+}
+
+/* The following means that all the header tags will share these
+properties. */
+
+H1, H2, H3, H4, H5, H6 {
+    font-family: Verdana, Arial, sans-serif;
+    color: var(--color-header);  
+    }
+
+/* The following apply to particular header tags.  */
+
+H1 { font-size: xx-large; }
+
+H2 { font-size: x-large; font-weight: bold; border-bottom: 1px solid var(--color-header) }
+
+H3 { font-size: large; font-weight: bold }
+
+H4 { font-size: large; font-style: italic }
+
+H5 { font-size: medium; font-weight: bold }
+
+H6 { font-size: medium; font-style: italic }
+     
+
+h2.plain {	
+	border-bottom: none;
+}
+
+h3 {	
+	border-bottom: 1px dashed blue;
+}
+
+h4 {	
+	border-bottom: 1px dotted blue;
+}
+
+h1 a:link, h2 a:link, h3 a:link, h4 a:link {
+       text-decoration: none;
+       }
+
+h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited {
+       text-decoration: none;
+       color: blue;
+       }
+
+div#insert_TOC_here {
+    background-color: #EEE;
+    border: 3px solid gray;
+}
+
+/* don't change colors of visited links in the TOC */
+div#insert_TOC_here a {
+    color: blue;
+}
+
+
+
+} /* end of screen-specific styles ====================================================== */
+
+@media print {
+body {	
+	font-family: "Times New Roman", "Times", serif;
+	font-size: 11pt;
+   	color: black;
+	background-color: white;
+	line-height: 1.1;
+}
+
+/* divides the reading from the class material */
+
+h2.div {
+    padding: 3ex;
+    border: 3px solid black;
+    background-color: white;
+    }
+
+} /* end of print-specific styles ======================================================== */
+
+h1 {	
+	text-align: center;
+	font-weight: bold; 
+	font-size: 150%;
+	padding: 0.2em;
+    padding-top: 0.2em;
+    /*padding-bottom: 30px;   because of the logo icon to the right */
+}
+
+h2 {	
+	font-size: 125%;
+	font-weight: bold;
+	border-bottom: 0.05em solid;
+}
+
+
+h3 {	
+	font-weight: bold;
+    font-size: 120%;
+}
+
+hr.bigskip {
+    background-color: navy;
+    height: 10px;
+}
+
+UL.long LI, OL.long LI {
+   padding-top: 2ex;
+}
+
+DT {
+   font-weight: bold;
+   }
+
+/* ================================================================ */
+/* schedule (calendar) stuff */
+
+table.calendar td.holiday {
+    background-color: #78ddff;
+}
+
+table.calendar a.due {
+	color: var(--color-hilite); /* was 'red' but this avoids WAVE contrast errors */
+}
+
+table.calendar td, table.calendar th { vertical-align: top; border: 1px solid gray; }
+       
+/* Used in the schedule for table cells where there is no class meeting that day. */
+
+.nc {
+	background-color: yellow;
+	color: black;
+}
+
+.hwk, .project {
+	color: var(--color-hilite); /* was 'red' but this avoids WAVE contrast errors */
+}
+
+.blackBg {
+	background-color: black;
+	color: yellow;
+	padding: 2em;
+}
+
+.instruction {
+	font-size: 10pt;
+}
+
+/* ================================================================ */
+
+.sidebar {
+	font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+	text-align: left;
+	background-color: white;
+	color: black;
+	padding: 20px;
+	width: 150px;
+}
+
+.sidebar2 {
+	font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+	text-align: left;
+	background-color: white;
+	color: black;
+	padding: 10px;
+	font-size: 8pt;
+}
+
+.contactInfo {
+	font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+	color: black;
+	font-size: 8pt;
+	line-height: 10pt;
+	list-style-type: none;
+}
+
+@media print {
+a {	color:black; 
+	text-decoration: none;
+	font-weight:bold;
+}
+}
+
+div.indent {
+	padding-left: 20px;
+}
+
+div.indent2 {
+	padding-left: 10px;
+	font-size: smaller;
+}
+
+/* Another version, for the list of icons for copyright, standards
+compliance and so forth */
+
+#iconlist {
+   padding-left: 0px;
+   margin-left: 0px;
+   border-left: 0px;
+   width: 100%;
+/*   padding-top: 20px; */
+/*   border-top: 2px solid gray; */
+}
+
+#iconlist LI {
+   display: inline;
+   list-style-type: none;
+   padding-left:   0px;
+   padding-right: 10px;
+}
+
+/* for centering images on a page */
+
+.displayimg {
+    text-align: center
+}
+
+@media print {
+#iconlist LI IMG {
+   display: none;
+   }
+}
+
+DIV.exercise {
+   padding-left: 3em;
+   padding-right: 3em;
+   background-color: #CCFFCC;
+   border: thick solid green;
+   }
+
+@media print { .screenonly { display: none; }}
+@media screen { .screenonly { display: block; }}
+
+/* we have one or two quotations we use */
+
+.quote {
+    float: left;
+    border: 4px solid maroon;
+    border-radius: 10px;
+    background-color: #FEE;
+    padding: 1em;
+}
+
+.quotesig {
+    float: right;
+}  
+
+.bordered td, .bordered th {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin: 0px;
+    padding: 0.5ex 1em;
+}
+
+table {
+    border: 1px solid black;
+    padding: 5px;
+    background-color: var(--bgcolor-block);
+}
+
+table.bordered {
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 2px solid black;
+}
+
+/* The Markdown TOC extension adds the div.toc element */
+
+div.toc {
+    border: 1px solid black;
+    background-color: #eee;
+    font-size: smaller;
+    padding: 1ex 1em;
+}
+
+div.toc a {
+    text-decoration: none;
+}
+
+div.toc ul {
+    list-style-type: none;
+    margin-top: 1rem;
+    margin-bottom: 0rem;
+}
+
+/* This gets added by JS to wrap the div.toc. We use clear to get it under
+the logo. */
+
+nav.toc {
+    clear: left; 
+}
