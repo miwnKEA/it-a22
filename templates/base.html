@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Informationsteknologi</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS; should concatenate these into one file -->
+    <!-- link to url for css normalize css-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/prism.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/webdb-style.css') }}">
+
+    <!-- We load jQuery at the top so that we can intersperse examples in
+       the reading and lecture notes -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bounds-plugin.js') }}"></script>
+
+</head>
+
+<body>
+    <header>
+        <nav id="site_nav">
+            <ul>
+                <!-- https://www.accessibility-developer-guide.com/examples/hiding-elements/visually/ -->
+                <li class="visually-hidden"><a href="#main">skip to main content</a>
+                <li><a href="/">Forside</a>
+                {% for page in pageDays %}
+                    {% if page[1] == 1 %}
+                    <li><a href="{{ page[0] }}">Dag {{ page[0]}}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        <!-- nav only on some pages. See main.html -->
+    </header>
+
+
+    <div class="container">
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+    <footer>
+
+    </footer>
+
+    <script>
+        // fix some things before prism runs
+        if (true) {
+
+            // Prism uses line-numbers on the PRE,
+            // while codehilite puts them on the CODE
+            $("PRE.codehilite CODE.linenums").each(function (index, elt) {
+                $(elt).parent().addClass('line-numbers');
+            });
+
+            // soft-wrapping avoids the terrible horizontal scroll bars,
+            // but messes up line numbering. The prism line numbering feature
+            // will be smart about this if this inline CSS style is there.
+
+            $("PRE.codehilite").css('white-space', 'pre-wrap')
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/prism.min.js') }}"></script>
+    <script>
+        // For the Table of Contents in many pages
+        // markdown creates and inserted the TOC, but we wrap it with
+        // some extra HTML
+        $("div.toc")
+            .wrap("<nav class='toc'>")
+            .before("<button>table of contents</button>");
+
+        // hide the toc when the page loads.
+        $("nav.toc > div.toc").hide();
+
+        // clicking on the button toggles the toc
+        $("nav.toc > button").on('click', function () {
+            $("nav.toc > div.toc").toggle();
+        });
+
+        // hide toc when we click anywhere, including on a link inside it
+        $("div.toc").on('click', function () { $("div.toc").hide(); });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/cs204custom.js') }}"></script>
+
+    <script>
+        $(".example-with-code").each(function (index, elt) {
+            var src = $(elt).find(".example").html();
+            console.log("src for " + index + " is " + src);
+            $(elt).find("pre").text(src);
+        });
+
+    // addMarginTopToFragment(); no longer needed; now have scroll-margin-top
+    </script>
+
+</body>
+
+</html>

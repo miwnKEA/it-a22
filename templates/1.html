@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="one column"></div>
+    <article id="main" class="ten columns">
+
+        <h1>{{ d[2] }}</h1>
+        <p>På den første dag vil vi fokusere på at blive introduceret til Raspberry Pi, dens komponenter og operativsystem. Vi vil 
+            kigge på projekter som vi kan udvikle over de fire sprints. Først og fremmest vil vi opsætte Raspberry Pi med Sense
+            HAT, som indeholder at forstå komponenterne, operativsystemet og hvordan vi tilgår enheden over et netværk.</p>
+
+        <div class="toc">
+            <ul>
+                <li><a href="#komponenter">Komponenter</a></li>
+                <li><a href="#operativsystem">Operativsystem</a></li>
+                <li><a href="#lan">Lokalt netværk</a></li>
+                <li><a href="#fjernadgang">Fjernadgang</a></li>
+                <li><a href="#linux-kommandoer">Linux kommandoer</a></li>
+                <li><a href="#sense-hat">Sense HAT</a></li>
+                <li><a href="#vsc">Visual Studio Code</a></li>
+                <li><a href="#nextsteps">Next steps</a></li>
+                <li><a href="#lcd-touchscreen-hat">Ekstra: LCD Touchscreen HAT</a></li>
+            </ul>
+        </div>
+        <br />
+
+        <h2 id="komponenter">Komponenter <a class="headerlink" href="#komponenter" title="Permanent link">&para;</a>
+        </h2>
+        <p>⏳ 10 min</p>
+        <p>Inspicer komponenterne på jeres Raspberry Pi ud fra følgende:</p>
+        <ul>
+            <li>Hvor er strømstikket?</li>
+            <li>Hvor skal mikro SD-kortet sættes ind?</li>
+            <li>Hvor er mikrochippen for processoren?</li>
+            <li>Hvor er mikrochippen for hukommelsen?</li>
+            <li>Hvor er mikrochippen for trådløse netværksforbindelser?</li>
+            <li>Hvor kan en sensor tilsluttes?</li>
+            <li>Hvor sætter vi skærm, mus eller tastatur til?</li>
+        </ul>
+        <p><img src="{{ url_for('static', filename='img/1/components-1.png') }}" height="80%" width="80%"/> </p>
+        <p><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html" target="_blank">Læs mere i dokumentationen for Raspberry Pi 4 Model B.</a></p>
+        <p>Kig derefter på Sense HAT og tænk over følgende:</p>
+        <ul>
+            <li>Hvad gør LED 8x8 matrix?</li>
+            <li>Hvad kan et gyroskop?</li>
+            <li>Hvad kan et accelerometer?</li>
+            <li>Hvad kan et magnetometer?</li>
+            <li>Hvad kan en fugtsensor?</li>
+            <li>Hvad kan en sensor som måler trykket?</li>
+            <li>Hvad kan joystikket?</li>
+        </ul>
+        <p><img src="{{ url_for('static', filename='img/1/components-2.png') }}" height="60%" width="60%"/> </p>
+        <p><a href="https://www.raspberrypi.com/documentation/accessories/sense-hat.html" target="_blank">Læs mere i dokumentationen for Sense HAT.</a></p>
+        <p></p>
+
+        <h2 id="operativsystem">Operativsystem <a class="headerlink" href="#operativsystem"
+                title="Permanent link">&para;</a></h2>
+        <p>⏳ 30 min<br />
+            ⚠️ Vær opmærksom på konfigurationen<br />
+            ☕ Læs videre imens du venter på installationen</p>
+        <p>Indsæt SD-kortet i computeren ved at anvende USB-adapteren til SD-kort.</p>
+        <p><img src="{{ url_for('static', filename='img/1/os-1.png') }}" height="40%" width="40%"/> </p>
+        <p>Download og installer Raspberry Pi Imager (<a href="https://www.raspberrypi.com/software/" target="_blank">link</a>).</p>
+        <p>Vælg Raspberry Pi OS som Operating System og SD-kortet som Storage.</p>
+        <p><img src="{{ url_for('static', filename='img/1/os-2.png') }}" height="60%" width="60%"/> </p>
+        <p>Tryk på ikonet for Indstillinger for at lave opsætning af operativsystemet.</p>
+        <ul>
+            <li>Vælg et hostname</li>
+            <li>Sørg for at checke "Enable SSH" for at tillade fjernadgang</li>
+            <li>Brug "Password Authentication" for tillade fjernadgang med password</li>
+            <li>Sæt brugernavn til "pi" og vælg et password ... "raspberry" er standard</li>
+            <li>Opsæt det trådløse netværk til:</li>
+            <ul><li>SSID: KEA_IOT_ROUTER_1</li></ul>
+            <ul><li>Password: MONSTER1</li></ul>
+            <li>Sæt resten af indstillingerne til Danmark</li>
+        </ul>
+        <p><img src="{{ url_for('static', filename='img/1/os-3.png') }}" height="60%" width="60%"/> </p>
+        <p>Gem indstillingerne og tryk på Write for at starte installationen af operativsystemet på SD-kortet.</p>
+        <p><img src="{{ url_for('static', filename='img/1/os-4.png') }}" height="60%" width="60%"/> </p>
+        <p>Tag mikro SD-kortet ud af adapteren når installationen er færdig.</p>
+        <p><img src="{{ url_for('static', filename='img/1/os-5.png') }}" height="60%" width="60%"/> </p>
+        <p>Indsæt mikro SD-kortet på undersiden af din Raspberry Pi.</p>
+        <p><img src="{{ url_for('static', filename='img/1/os-6.png') }}" height="60%" width="60%"/> </p>
+        <p>Sæt strøm til din Raspberry Pi for at tænde den.</p>
+
+        <h2 id="lan">Lokalt netværk <a class="headerlink" href="#lan" title="Permanent link">&para;</a></h2>
+        <p>⏳ 10 min<br />
+        <p>Der er opsat en Wi-Fi router i undervisningslokalet eller Tech & Story Lab med et SIM-kort som er tilsluttet TDCs mobilnetværk. Der er kun 32 til 64 computere som kan forbinde til Wi-Fi routeren og forbindelsen har begrænset båndbredde så lad være med at se video over routeren.</p>
+        <ul>
+            <li>SSID: KEA_IOT_ROUTER_1</li>
+            <li>Password: MONSTER1</li>
+        </ul>
+        <p><img src="{{ url_for('static', filename='img/1/network-1.png') }}" height="60%" width="60%"/></p>
+        <p>Jeres computer og Raspberry Pi skal være forbundet til det samme netværk for at kunne tilgå den med en fjernadgang. Her er administratorsiden for KEA_IOT_ROUTER_1 med en oversigt over forbundet enheder.</p>
+        <p>Bemærk at hver enhed har et hostname, for eksempel beitpi, og en IP adresse. Vi kan anvende hostname og ip adressen til at tilgå vores enhed med en fjernadgang fra vores computer over netværket.</p>
+        <p><img src="{{ url_for('static', filename='img/1/network-2.png') }}" height="80%" width="80%"/></p>
+        <p>Det er også muligt at forbinde jeres Raspberry Pi til Internetdeling med en telefon eller jeres eget Wi-Fi netværk derhjemme. Bemærk at nyere smartphones kan have sikkerhedsbegrænsninger som blokerer for denne mulighed.</p>
+        <p>Se afsnittet om fjernadgang og skriv følgende for at tilgå netværkskonfigurationen for Wi-Fi og lave ændringer.</p>
+        <pre class="codehilite"><code>sudo nano /etc/wpa_supplicant/wpa_supplicant.conf</code></pre>
+        <p>Indsæt navn på Wi-Fi netværk og password.</p>
+        <pre class="codehilite"><code>country=DK
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    ssid="your_wifi_name"
+    psk="your_wifi_password"
+}</code></pre>
+        <p>Tryk på CTRL+X og Y for at gemme og afslutte.</p>
+        <p>Alternativt tilslut en skærm med micro HDMI kablet, samt mus og keyboard, for at tilgå netværkskonfigurationen.</p>
+        <h2 id="fjernadgang">Fjernadgang <a class="headerlink" href="#fjernadgang" title="Permanent link">&para;</a>
+        </h2>
+        <p>⏳ 10 min</p>
+        <p>Når der er sat strøm til Raspberry Pi og den er forbundet til Wi-Fi netværket kan vi tilgå den fra vores computer via fjernadgang med SSH.</p>
+        <p><b>SSH</b></p>
+        <p>SSH står for Secure Shell og er en krypteret netværksprotokol som vi anvender til at etablere en sikker forbindelse mellem en klient og en server over et netværk.</p>
+        <p>På macOS er SSH en del af operativsystemet og du kan åbne en ny Terminal for at etablere en forbindelse til din Raspberry Pi via SSH-protokollen. Erstat "hostname" med dit valgte hostname.</p>
+        <pre class="codehilite"><code>ssh pi@hostname.local</code></pre>
+        <p>Når du skriver dit password vil der ikke være en stjerne (*) for hvert bogstav af sikkerhedsmæssige årsager og første gang du logger ind skal du sige ja til "fingerprint authentication" for SSH-protokollen.</p>
+        <img src="{{ url_for('static', filename='img/1/remote-1.png') }}" height="60%" width="60%"/>
+        <p>På Windows kan du installere programmet PuTTY (<a href="https://www.putty.org/" target="_blank">link</a>) til at etablere en forbindelse til din Raspberry Pi via SSH-protokollen. Når du har installeret PuTTY skal du åbne programmet og indtaste IP-adressen eller "hostname.local" (erstat "hostname" med dit valgte hostname) og vælge SSH som protokol. Derefter kan du logge ind med dit brugernavn og password.</p>
+        <p><img src="{{ url_for('static', filename='img/1/remote-2.png') }}" height="50%" width="50%" style="box-shadow: 0px 0px 10px 10px #eee;"/></p>
+      
+        <h2 id="linux-kommandoer">Linux kommandoer <a class="headerlink" href="#linux-kommandoer" title="Permanent link">&para;</a></h2>
+        <p>⏳ 10 min<br />
+        <p>Start med at sikre at operativsystemet og diverse softwarepakker er opdateret. Skriv følgende kommandoer en ad gangen via en SSH-forbindelse i et Terminal-vindue.</p>
+        <p>Du kan skrive "sudo" før en kommando for at udføre kommandoen med root-adgang, som betyder du har super user privilegier og er en slags administratorrettigheder.</p>
+        <pre class="codehilite"><code>sudo apt-get update
+sudo apt-get upgrade
+sudo reboot</code></pre>
+        <p>Vent på at din Raspberry Pi har opdateret og genstartet. Derefter åben din fjernadgang igen.</p>
+        <p>Prøv at skriv følgende kommandoer en ad gangen i et Terminal-vindue via SSH.</p>
+        <pre class="codehilite"><code>uname -a
+cat /etc/os-release
+cat /proc/version
+whoami
+ifconfig
+iwlist wlan0 scan
+</code></pre>
+        <p>Kommandoerne giver svar på hvilket hostname din Raspberry Pi har, hvilket operativsystem, hvilken kerne operativsystemet er bygget på, hvem brugeren er, netværksinformation, de sidste kommandoer som er skrevet i Terminalen og rydde Terminal-vinduet.</p>
+        <p>For at navigere i stier til filer på tværs af mapper skal vi anvende følgende kommandoer.</p>
+        <p>Se stien til den nuværende lokation.</p>
+        <pre class="codehilite"><code>pwd</code></pre>
+        <p>Se alle filer og mapper i den nuværende lokationer.</p>
+        <pre class="codehilite"><code>ls</code></pre>
+        <p>Opret en ny mappe efterfulgt af et navn på mappen.</p>
+        <pre class="codehilite"><code>mkdir navn-på-mappen</code></pre>
+        <p>Skift lokation til den nye mappe.</p>
+        <pre class="codehilite"><code>cd navn-på-mappen
+pwd</code></pre>
+        <p>Opret en ny fil efterfulgt af et navn på filen (husk filtype).</p>
+        <pre class="codehilite"><code>touch script.py</code></pre>
+        <p>Åben en fil efterfulgt af et navn på filen. Tryk CTRL+X for at komme tilbage til Terminalen.</p>
+        <pre class="codehilite"><code>sudo nano script.py</code></pre>
+        <p>For at gå en mappe tilbage i stien.</p>
+        <pre class="codehilite"><code>cd ..</code></pre>
+        <p>For at tilgå konfigurationen for Raspberry Pi OS på din Raspberry Pi kan du skrive følgende.</p>
+        <pre class="codehilite"><code>sudo raspi-config</code></pre>
+        <p>For at åbne den grafiske brugergrænseflade, hvis du har en skærm tilsluttet med HDMI-kablet, kan du skrive følgende. Det er muligt at låne en skærm til brug på KEA i Tech & Story Lab.</p>
+        <pre class="codehilite"><code>startx</code></pre>
+        <p>Andre brugbare kommandoer er clear og history, som hver især rydder alt indhold i kommandoprompten og viser alle tidligere skrevne kommandoer.</p>
+        <pre class="codehilite"><code>clear</code></pre>
+        <pre class="codehilite"><code>history</code></pre>
+        <p>Der findes et utal af Linux kommandoer som vi løbende kommer til at få brug for.</p>
+        
+        
+        <h2 id="sense-hat">Sense HAT <a class="headerlink" href="#sense-hat" title="Permanent link">&para;</a></h2>
+        <p>⏳ 45 min<br />
+        <p>Sense HAT er en ekstra enhed til Raspberry Pi som kan tilsluttes via GPIO-stikkene. Den har en række sensorer, et 8x8 LED matrix display og et joystick.</p>
+        <p>Tag strømmen fra og sæt Sense HAT ovenpå GPIO-stikkene på din Raspberry Pi. Når Sense HAT sidder fast på GPIO-stikkene kan du slutte strøm til igen.</p>
+        <p><img src="{{ url_for('static', filename='img/1/sensehat-1.png') }}" height="60%" width="60%"/></p>
+        <p><img src="{{ url_for('static', filename='img/1/sensehat-2.png') }}" height="60%" width="60%"/></p>
+        <p>For at få Sense HAT til at virke skal vi installere følgende pakker.</p>
+        <pre class="codehilite"><code>sudo apt-get update
+sudo apt-get install sense-hat</code></pre>
+        <p>Vi kan nu teste Sense HAT med Python scripts.</p>
+        <p>Vi starter med at oprette en ny mappe Projects og så henter vi filer med Git (<a href="https://git-scm.com/" target="_blank">link</a>) fra GitHub (<a href="https://github.com/miwnKEA/sense-hat/" target="blank">link</a>).</p>
+        <p>Git er et udviklerværktøj og kommandoen 'clone' betyder at downloade noget kode fra et opbevaringssted, for eksempel GitHub, til din lokale maskine så du kan arbejde med koden.</p>
+        <pre class="codehilite"><code>mkdir Projects && cd Projects
+git clone https://github.com/miwnKEA/sense-hat.git
+cd sense-hat
+ls
+touch demo.py
+sudo nano demo.py</code></pre>
+        <p>Vi skriver følgende kode i demo.py.</p>
+        <pre class="codehilite"><code>from sense_hat import SenseHat
+sense = SenseHat()
+sense.show_message("Hello World!")</code></pre>
+        <p>Vi gemmer og lukker filen med CTRL+X efterfulgt af Y og Enter.</p>
+        <p>Eksekver de forskellige Python filer ved at skrive:</p>
+        <pre class="codehilite"><code>python3 demo.py</code></pre>
+        <p>Prøv at eksekvere resten af filerne i mappen.</p>
+        <pre class="codehilite"><code>ls
+cat heart.py
+python3 heart.py
+python3 rainbow.py
+python3 dice.py
+python3 pong.py
+python3 sensors.py</code></pre><br />
+<h2 id="vsc">Visual Studio Code <a class="headerlink" href="#vsc" title="Permanent link">&para;</a></h2>
+<p>⏳ 25 min</p>
+<p>I Visual Studio Code (<a href="https://code.visualstudio.com/" target="_blank">link</a>) kan vi også lave en fjernadgang til vores Raspberry Pi via SSH-protokollen.</p>
+<p>Søg på "Remote - SSH" (<a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh" target="_blank">link</a>) under Marketplace for Extensions (ikonet med fire klodser i menuen til venstre) i Visual Studio Code og følg vejledningen til at installere udvidelsespakken (<a href="https://code.visualstudio.com/docs/remote/ssh" target="_blank">link</a>).</p>
+<img src="{{ url_for('static', filename='img/1/vsc-1.png') }}" height="80%" width="80%"/>
+<p>Find Remote Explorer i menuen til venstre (ikonet med en skærm).</p>
+<p>Hold musen ud for SSH og tryk på + for at tilføje en ny SSH-forbindelse.</p>
+<pre class="codehilite"><code>ssh pi@hostname.local</code></pre>
+<img src="{{ url_for('static', filename='img/1/vsc-2.png') }}" height="80%" width="80%"/>
+<p>Tryk Continue for at oprette en krypteringsnøgle til fjernadgang mellem din computer og Raspberry Pi.</p>
+<img src="{{ url_for('static', filename='img/1/vsc-3.png') }}" height="80%" width="80%"/>
+<br /><br />
+<p>Vælg konfigurationen for SSH til din bruger på din computer.</p>
+<img src="{{ url_for('static', filename='img/1/vsc-4.png') }}" height="80%" width="80%"/>
+<br /><br />
+<p>Det kan tage noget tid at downloade og opsætte VS Code Server for SSH på din Raspberry Pi.</p>
+<img src="{{ url_for('static', filename='img/1/vsc-5.png') }}" height="60%" width="60%"/>
+
+<img src="{{ url_for('static', filename='img/1/vsc-6.png') }}" height="60%" width="60%"/>
+<p>Tryk på Open Folder.</p>
+<p>Vælg stien /home/pi/ og indtast dit password for Raspberry Pi.</p>
+<img src="{{ url_for('static', filename='img/1/vsc-7.png') }}" height="80%" width="80%"/>
+<p>Nu kan du åbne og ændre filer i Visual Studio Code via en SSH-forbindelse.</p>
+<img src="{{ url_for('static', filename='img/1/vsc-8.png') }}" height="80%" width="80%"/>
+<h2 id="nextsteps">Next steps <a class="headerlink" href="#nextsteps"
+    title="Permanent link">&para;</a></h2>
+<p>⏳ 10 min<br />
+💡 Hvordan kan Flask anvendes til at lave en webserver?<br />
+🚀 Hvad kunne være en interessant videreudvikling?<br /></p>
+<p>På dag 2 skal vi opsætte en webserver med en Flask applikation og sende beskeder mellem vores Raspberry Pi og vores webserver på <a href="https://www.pythonanywhere.com" target="_blank">PythonAnywhere</a>.</p>
+<p>Sørg for at oprette en bruger I jeres grupper og den behøver ikke være personlig. I kan godt deles om et password til PythonAnywhere-kontoen.</p>
+<p>Når du er logget ind på PythonAnywhere vil du kunne se et Dashboard.</p>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-1.png') }}" height="80%" width="80%"/>
+<p>Under Files har du et stifindersystem hvor du kan oprette mapper og filer for at indsætte din Python kode.</p>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-2.png') }}" height="80%" width="80%"/>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-3.png') }}" height="80%" width="80%"/>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-4.png') }}" height="80%" width="80%"/>
+<p>Under Web kan du opsætte en webapplikation på et domæne med dit brugernavn og du skal opsætte webapplikationen til at pege på en mappe under Files.</p>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-5.png') }}" height="80%" width="80%"/>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-6.png') }}" height="80%" width="80%"/>
+<p>Under WSGI configuration file skal du opsætte en konfiguration som peger på din mappe og din Flask applikationsfil.</p>
+<img src="{{ url_for('static', filename='img/1/pythonanywhere-7.png') }}" height="80%" width="80%"/>
+<p>På dag 2 gennemgår vi opsætningen for en Flask applikation på PythonAnywhere.</p>
+<p>For at vores Raspberry Pi kan kontaktes over Internettet skal den have en URL og med <a href="https://www.ngrok.com" target="_blank">Ngrok</a> kan vi lave en tunnel fra vores Raspberry Pi op til Ngroks servere.</p>
+<p>Sørg for at oprette en bruger I jeres grupper og den behøver ikke være personlig. I kan godt deles om et password til Ngrok-kontoen.</p>
+<p>På dag 2 gennemgår vi opsætningen for Ngrok på vores Raspberry Pi ud fra dokumentationen (<a href="https://ngrok.com/docs/guides/device-gateway/raspberry-pi/" target="_blank">link</a>).</p>
+<img src="{{ url_for('static', filename='img/1/ngrok-1.png') }}" height="80%" width="80%"/>
+<img src="{{ url_for('static', filename='img/1/ngrok-2.png') }}" height="80%" width="80%"/>
+<h2 id="lcd-touchscreen-hat">Ekstra: LCD Touchscreen HAT <a class="headerlink" href="#lcd-touchscreen-hat" title="Permanent link">&para;</a></h2>
+<p>⏳ 60 min<br />
+🚧 Bemærk det kan give udfordringer med operativsystemet at følge disse trin<br />
+⚠️ Hvis det går galt skal du installere operativsystemet forfra på Raspberry Pi<br />
+☣️ Det er med høj risiko, så gør det kun hvis du skal bruge LCD Touchscreen HAT i jeres projekt<br />
+📅 Denne guide er sidst blevet gennemgået og afprøvet i foråret 2023</p>
+<p>LCD Touchscreen HAT er en ekstra enhed til Raspberry Pi som kan tilsluttes via GPIO-stikkene for at få en integreret LCD-skærm og en touchskærm.</p>
+<img src="{{ url_for('static', filename='img/1/lcd-1.png') }}" height="50%" width="50%"/>
+<p>Tag strømmen fra og fjern Sense HAT fra din Raspberry Pi så du kan sætte LCD Touchscreen HAT på og slutte strøm til igen.</p>
+<p>For at få LCD Touchscreen HAT til at virke skal vi installere følgende pakker. Bemærk at det kan give udfordringer med operativsystemet at både installere softwarepakker for SenseHAT og LCD Touchscreen HAT på det samme Raspberry Pi OS.</p>
+<pre class="codehilite"><code>cd Projects
+git clone https://github.com/MrYacha/LCD-show.git
+cd LCD-show
+sudo ./LCD35-show</code></pre>
+<p>Når din Raspberry Pi er genstartet skal du åbne en fjernadgang igen. Det anbefales at bruge en SSH-forbindelse når vi arbejder med denne HAT.</p>
+<p>Det kan være rart at rotere skærmen så din Raspberry Pi kan stå op på langsiden. Åben /boot/config.txt og find indstillingen for dtoverlay nederst.</p>
+<pre class="codehilite"><code>sudo nano /boot/config.txt
+dtoverlay=waveshare35a:rotate=270</code></pre>
+<p>Tryk på CTRL+X og Y for at gemme og afslutte. Lav derefter en genstart for at få skærmen til at være roteret.</p>
+<pre class="codehilite"><code>sudo reboot</code></pre>
+<p>Vi kan kalibrere touchskærmen så den passer til rotationen.</p>
+<pre class="codehilite"><code>sudo apt-get install xinput-calibrator
+DISPLAY=:0.0 xinput_calibrator</code></pre>
+<p>Gem output fra kalibreringen som ligner det her.</p>
+<pre class="codehilite"><code>Section "InputClass"
+Identifier	"calibration"
+MatchProduct	"ADS7846 Touchscreen"
+Option	"Calibration"	"197 3904 3939 225"
+Option	"SwapAxes"	"1"
+EndSection</code></pre>
+<p>Indsæt output fra kalibreringen i denne fil og åben filen med sudo nano.</p>
+<pre class="codehilite"><code>sudo nano /usr/share/X11/xorg.conf.d/99-calibration.conf</code></pre>
+<p>Tryk på CTRL+X og Y for at gemme og afslutte. Lav derefter en genstart for at få kalibreringen til at virke.</p>
+<pre class="codehilite"><code>sudo reboot</code></pre>
+<p>Vi skal installere forskellige moduler for at få Raspberry Pi til at starte i "kiosk"-mode og vise en hjemmeside på LCD Touchscreen HAT. Kiosk betyder at LCD Touchscreen HAT kun viser det indhold på skærmen som vi har indstillet den til at gøre og brugeren kan ikke klikke hen på andre sider, men brugeren kan godt navigere rundt på hjemmesiden.</p>
+<pre class="codehilite"><code>sudo apt-get install --no-install-recommends xserver-xorg
+sudo apt-get install --no-install-recommends xinit
+sudo apt-get install --no-install-recommends x11-xserver-utils
+
+sudo apt-get install chromium-browser
+sudo apt-get install matchbox-window-manager xautomation unclutter</code></pre>
+<p>Lav en fil som hedder kiosk i mappen kiosk i mappen Projects.</p>
+<pre class="codehilite"><code>cd ~/Projects/kiosk && touch kiosk</code></pre>
+<p>Åbn filen kiosk i nano.</p>
+<pre class="codehilite"><code>sudo nano kiosk</code></pre>
+<p>Indsæt koden nedenfor ind i filen.</p>
+<pre class="codehilite"><code>#!/bin/sh
+
+# disable DPMS (Energy Star) features.
+xset -dpms
+
+# disable screen saver
+xset s off
+xset s noblank
+
+# don't blank the video device
+matchbox-window-manager -use_titlebar no &
+
+# hide X mouse cursor unless mouse activated
+unclutter &
+chromium-browser --display=:0 --kiosk --incognito --window-position=0,0 https://kea.dk</code></pre>
+<p>Tryk på CTRL+X og Y for at gemme og afslutte.</p>
+<p>Ændr rettighederne på filen kiosk, så den kan køres.</p>
+<pre class="codehilite"><code>sudo chmod 755 kiosk</code></pre>
+<p>Åben filen .bashrc i nano og kopier koden nedenfor ind i filen.</p>
+<pre class="codehilite"><code>sudo nano ~/.bashrc</code></pre>
+<pre class="codehilite"><code>xinit /home/pi/Projects/kiosk/kiosk -- vt$(fgconsole)</code></pre>
+<p>Tryk på CTRL+X og Y for at gemme og afslutte.</p>
+<p>Åben Raspberry Pi konfigurationen og lav følgende ændringer.</p>
+<pre class="codehilite"><code>sudo raspi-config
+
+# vælg Display Options, D2 Underscan, Enable compensation? [No]
+
+# vælg System Options, S5 Boot / Auto Login, [B2 Console Autologin]
+
+# afslut og genstart
+
+sudo reboot</code></pre>
+<p>LCD Touchscreen HAT vise hjemmesiden www.kea.dk når din Raspberry Pi er genstartet. URL-adressen kan ændres til en Flask applikation på det lokale netværk, for eksempel http://mikkelpi.local:5000.</p>
+
+
+</article>
+</div>
+
+{% endblock %}

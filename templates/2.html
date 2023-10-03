@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="one column"></div>
+    <article id="main" class="ten columns">
+
+        <h1>{{ d[2] }}</h1>
+        <p>På den anden dag vil vi opsætte kendte udviklingsværktøjer på vores Raspberry Pi for at køre webapplikationer med data i en database. Vi vil anvende kendte værktøjer til modellering og programmering, herunder ER-diagrammer, SQL statements, mikro web frameworket Flask, mv. Formålet med dagen er at give en god forståelse af client-server arkitektur gennem forskellige eksempler.</p>
+
+        <div class="toc">
+            <ul>
+                <li><a href="#client-server">Client-server arkitektur</a></li>
+                <li><a href="#flask">Flask</a></li>
+                <li><a href="#sqlite">SQLite3</a></li>
+                <li><a href="#flask-sqlite-sensehat">Flask applikation med SQLite og Sense HAT</a></li>
+                <li><a href="#flask-ui">Flask applikation med brugergrænseflade for at sende beskeder</a></li>
+            </ul>
+        </div>
+        <br />
+
+        <h2 id="client-server">Client-server arkitektur<a class="headerlink" href="#client-server" title="Permanent link">&para;</a>
+        </h2>
+        <p>⏳ 15 min</p>
+        <p>Client-server arkitektur er en netværksarkitektur, hvor klienten og serveren kommunikerer med hinanden ved at udveksle beskeder. Det sker ved at klienten sender anmodninger til serveren og serveren behandler anmodningen og returnerer et svar til klienten.</p>
+        <p>Et eksempel på client-server arkitektur er kommunikationsmønsteret for Request-Response i netværksprotokollen HTTP som gør det muligt for klienten og serveren at kommunikere på en standardiseret måde.</p>
+        <p><img src="{{ url_for('static', filename='img/2/client-server-architecture-1.png') }}" /></p>
+        <p>Client-server arkitektur udvikles ofte ved at implementere en Application Programming Interface (API) med endpoints for specifikke URL-adresser på serveren, som tillader at klienter kan kommunikere med serveren og få adgang til de funktioner, services og ressourcer som er gjort tilgængelige via API'en. Hvert API endpoint repræsenterer en bestemt funktion, service eller ressource.</p>
+        <p><img src="{{ url_for('static', filename='img/2/endpoints-1.png') }}" /></p>
+        <p>Læs mere om client-server arkitektur (<a href="https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Client-Server_overview" target="_blank">link</a>) og HTTP metoder (<a href="https://realpython.com/api-integration-in-python/" target="_blank">link</a>).</p>
+        <p>Et eksempel på en arkitektur for en API kan være en REST API, som stiller ressourcer til rådighed gennem HTTP-anmodninger fra klienter.</p>
+        <p><img src="{{ url_for('static', filename='img/2/rest-api-1.png') }}" /></p>
+        <p><b>Eksempel på en client-server arkitektur med Flask</b></p>
+        <p>Find forklaringer og eksempler på client-server arkitektur og API'er på Real Python (<a href="https://realpython.com/api-integration-in-python/" target="_blank">link</a>).</p>
+        <p>Vi kan bruge Python modulet requests til at lave et HTTP request fra en klient mod et API endpoint på en server.</p>
+<pre><code class="language-python">import requests
+
+# Definer API-endpointet som en variabel
+endpoint = "https://api.example.com/get_data"
+
+# Definer parametrene, der skal inkluderes i anmodningen
+params = {"param1": "value1", "param2": "value2"}
+
+# Udfør HTTP GET-anmodningen ved hjælp af requests-modulet
+response = requests.get(endpoint, params=params)
+
+# Tjek at anmodningen gik godt
+if response.status_code == 200:
+    # Konverter svaret til JSON-format
+    data = response.json()
+    # Gør noget med de modtagne data
+    print(data)
+else:
+    print("Fejl ved anmodning. Statuskode:", response.status_code)</code></pre><br />
+        <p>Vi kan bruge Python modulet Flask til at lave en server med et API endpoint som håndterer dette HTTP request fra klienten.</p>
+<pre><code class="language-python">from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Definer en URL-adresse for API endpointet med HTTP-metoden GET
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    # Hent parametrene fra anmodningen
+    param1 = request.args.get('param1')
+    param2 = request.args.get('param2')
+    # Behandl parametrene og returner et svar i JSON-format
+    data = {
+        'param1': param1,
+        'param2': param2,
+        'result': 'Dette er et svar fra serveren'
+    }
+    return jsonify(data)
+
+if __name__ == '__main__':
+    app.run(debug=True)</code></pre><br />
+
+
+    <h2 id="flask">Flask <a class="headerlink" href="#flask" title="Permanent link">&para;</a>
+    </h2>
+    <p>⏳ 10 min</p>
+    <p>For at lave webapplikationer med Python kan vi anvende modulet Flask, som er et mikro webframework. Det er designet og bygget på Werkzeug og Jinja2 og er kendt for at være hurtigt og nemt til at implementere webapplikationer og REST API'er.</p>
+    <ul>
+        <li>Request-Response: Werkzeug er en Web Server Gateway Interface (WSGI) til Python, som håndterer HTTP anmodninger og svar</li>
+        <li>Routing: Werkzeug giver også en routing-funktionalitet, som gør det muligt at definere URL-ruter og pege dem til specifikke funktioner i en applikation</li>
+        <li>Templates: Jinja2 er en template engine til Python, som kan bruges til at generere HTML</li>
+    </ul>
+    <p>Her er et eksempel på en Flask applikation.</p>
+<pre><code class="language-python">from flask import Flask
+
+app = Flask(__name__)
+    
+@app.route("/")
+def hello_world():
+    return "Hello, World!"
+
+if __name__ == '__main__':
+    app.run()</code></pre><br />
+    
+    <h2 id="sqlite">SQLite 3 <a class="headerlink" href="#sqlite" title="Permanent link">&para;</a>
+    </h2>
+    <p>⏳ 10 min</p>
+    <p>For at gemme data i en database kan vi anvende Python modulet SQLite3 til at lave en SQL database.</p>
+    <p>En database designes ved brug af et ER-diagram før den oprettes. Dette diagram definerer entiteterne, attributterne og relationerne.</p>
+    <p><img src="{{ url_for('static', filename='img/2/database-design-1.png') }}" /></p>
+    <p>En database oprettes med Data Definition Language (DDL) for at definere og tilrette databasestrukturer, såsom tabeller, kolonner og relationer gennem primærnøgler og fremmednøgler.</p>
+    <p>En database kan interageres med via Data Manipulation Language (DML) for at læse, indsætte, opdatere og slette data i tabeller og kolonner.</p>
+    <p>Eksempel på en SQLite3 database med CREATE TABLE for DDL og INSERT INTO for DML.</p>
+    <pre><code class="language-python">import sqlite3
+
+# Opretter forbindelse til databasen og opretter en cursor
+with sqlite3.connect('example.db') as conn:
+    c = conn.cursor()
+
+    # Opretter en tabel
+    c.execute('''CREATE TABLE IF NOT EXISTS customers
+                (id INTEGER PRIMARY KEY, email TEXT, 
+                password TEXT, full_name TEXT, 
+                billing_address TEXT, 
+                default_shipping_address TEXT, 
+                country TEXT, phone TEXT)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS orders
+                (id INTEGER PRIMARY KEY, customer_id INT, 
+                amount REAL, shipping_address TEXT, 
+                order_address TEXT, order_email TEXT, 
+                order_date TEXT, order_status TEXT, 
+                FOREIGN KEY(customer_id) REFERENCES 
+                customers(id))''')
+
+    # Indsætter nogle data i tabellen
+    c.execute('INSERT INTO customers (email, password, full_name, 
+    billing_address, default_shipping_address, country, phone) 
+    VALUES(?, ?, ?, ?, ?, ?, ?)', ("john@gmail.com", "1234", 
+    "John Doe", "Flot vej 2A", "Flot vej 2A", "Denmark", 
+    "30484048"))
+
+with sqlite3.connect('example.db') as conn:
+    c = conn.cursor()
+    c.execute('SELECT * FROM customers')</code></pre><br />
+
+    <h2 id="flask-sqlite-sensehat">Flask applikation med SQLite database og Sense HAT <a class="headerlink" href="#flask-sqlite-sensehat" title="Permanent link">&para;</a>
+    </h2>
+    <p>⏳ 30 min</p>
+    <p>Vi kan få en Flask applikation med en SQLite database op og køre på Raspberry Pi for at styre Sense HAT. Vi kalder projektet for "Smart Home". Opret en SSH-forbindelse ind på din Raspberry Pi</p>
+    <pre class="codehilite"><code>ssh pi@hostname.local</code></pre>
+    <p>Når du er inde på din Raspberry Pi, så skriv følgende kommandoer i Terminalen for at oprette mapper og filer for projektet:</p>
+    <pre class="codehilite"><code>cd Projects && mkdir smart-home
+cd smart-home
+touch app.py</code></pre>
+<p>Gå ind på følgende GitHub repository og find projektkoden for Smart Home: <a href="https://github.com/miwnKEA/smart-home" target="_blank">link til GitHub</a>.</p>
+<p>Kopier projektkoden i filen app.py og skriv følgende i Terminalen og indsæt herefter koden og afslut med CTRL+X.</p>
+<pre class="codehilite"><code>sudo nano app.py</code></pre>
+<p>Når du afslutter med CTRL+X skal du skrive Y og trykke ENTER for at gemme ændringerne.</p>
+<pre><code class="language-python">from flask import Flask, request, jsonify
+import os
+import sqlite3 
+import datetime
+from sense_hat import SenseHat
+    
+app = Flask(__name__)
+    
+dir = os.path.dirname(__file__)
+db = os.path.join(dir, 'messages.db')
+    
+with sqlite3.connect(db) as connection:
+    c = connection.cursor()
+    c.execute('CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY, type TEXT, color TEXT, content TEXT, datetime TEXT, sender_host TEXT, sender_name TEXT, receiever_host TEXT, receiever_name TEXT)')
+    
+app.config["JSON_AS_ASCII"] = False
+    
+sense = SenseHat()
+    
+r = (255, 0, 0)         # red
+o = (255, 128, 0)       # orange
+y = (255, 255, 0)       # yellow
+g = (0, 255, 0)         # green
+b = (0, 0, 255)         # blue
+p = (255, 0, 255)       # purple
+n = (255, 128, 128)     # pink
+w = (255, 255, 255)     # white
+k = (0, 0, 0)           # blank
+    
+# create POST endpoint to receive data and set LED matrix
+# on Sense HAT to show message
+@app.route('/set_message', methods=['POST'])
+def set_message():
+    if request.method == 'POST':
+        type = request.json['type']
+        color = request.json['color']
+        content = request.json['content']
+        current_datetime = datetime.datetime.now().replace(microsecond=0)
+        current_datetime_str = current_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        sender_host = request.headers.get('Host')
+        sender_name = request.json['sender_name']
+        receiever_host = request.host
+        receiever_name = request.json['receiever_name']
+    
+        with sqlite3.connect(db) as connection:
+            c = connection.cursor()
+            c.execute('INSERT INTO messages(type, color, content, datetime, sender_host, sender_name, receiever_host, receiever_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', (type, color, content, current_datetime_str, sender_host, sender_name, receiever_host, receiever_name))
+    
+        if color == "blue":
+            c = b
+        elif color == "green":
+            c = g
+        elif color == "yellow":
+            c = y
+        elif color == "red":
+            c = r
+        elif color == "pink":
+            c = n
+    
+        if type == "message":
+            sense.show_message(content, 0.1, c)
+            # return json response with OK status
+            return jsonify({'status': 'Message set', 'type': type, 'color': color, 'message': content, 'sender_name': sender_name, 'receiever_name': receiever_name})
+        elif type == "heart":
+            sense.set_pixels([
+                k, c, c, k, k, c, c, k,
+                c, c, c, c, c, c, c, c,
+                c, c, c, c, c, c, c, c,
+                c, c, c, c, c, c, c, c,
+                c, c, c, c, c, c, c, c,
+                k, c, c, c, c, c, c, k,
+                k, k, c, c, c, c, k, k,
+                k, k, k, c, c, k, k, k
+            ])
+            # return json response with OK status
+            return jsonify({'status': 'Heart set', 'type': type, 'color': color, 'sender_name': sender_name, 'receiever_name': receiever_name})
+        elif type == "smiley":
+            if content == "happy":
+                sense.set_pixels([
+                    k, k, k, k, k, k, k, k,
+                    k, c, c, k, k, c, c, k,
+                    k, c, c, k, k, c, c, k,
+                    k, k, k, k, k, k, k, k,
+                    c, c, k, k, k, k, c, c,
+                    c, c, c, c, c, c, c, c,
+                    k, c, c, c, c, c, c, k,
+                    k, k, k, k, k, k, k, k])
+                # return json response with OK status
+                return jsonify({'status': 'Smiley set', 'type': type, 'color': color, 'mood': content, 'sender_name': sender_name, 'receiever_name': receiever_name})
+            elif content == "sad":
+                sense.set_pixels([
+                    k, k, k, k, k, k, k, k,
+                    k, c, c, k, k, c, c, k,
+                    k, c, c, k, k, c, c, k,
+                    k, k, k, k, k, k, k, k,
+                    k, k, k, k, k, k, k, k,
+                    k, c, c, c, c, c, c, k,
+                    c, c, c, c, c, c, c, c,
+                    c, c, k, k, k, k, c, c])
+                # return json response with OK status
+                return jsonify({'status': 'Smiley set', 'type': type, 'color': color, 'mood': content, 'sender_name': sender_name, 'receiever_name': receiever_name})
+            else:
+                sense.clear()
+                return jsonify({'status': 'No smiley set', 'type': type, 'color': color, 'mood': 'Only happy or sad accepted as content', 'sender_name': sender_name, 'receiever_name': receiever_name})
+
+# make GET endpoint to get all messages from database and jsonify them
+@app.route('/api/get_messages', methods=['GET'])
+    def get_messages():
+        with sqlite3.connect(db) as connection:
+            c = connection.cursor()
+            c.execute('SELECT * FROM messages')
+            messages = c.fetchall()
+        return jsonify(messages)
+
+if __name__ == '__main__':
+    # host='0.0.0.0' gør at serveren kan tilgås fra andre computere 
+    # på netværket via dens IP-adresse
+    app.run(host='0.0.0.0', port=8000)</code></pre><br />
+<p>Start Python scriptet app.py på din Raspberry Pi.</p>
+<pre class="codehilite"><code>python3 app.py</code></pre>
+<p>Nu kan vi lave cURL requests over netværket fra en anden computer ved hjælp af HTTP-protokollen. Se i koden app.py hvordan et POST requests for endpoint /set_message håndteres.</p>
+<p>Husk at skifte hostname til en din Raspberry Pi for hvert cURL requests i stedet for hostname.local:8000.</p>
+<pre class="codehilite"><code>curl -X POST -H "Content-Type: application/json" -d '{"type": "message", "color": "blue", "content": "Hello World", "sender_name": "Mikkel", "receiever_name": "Bob"}' http://hostname.local:8000/set_message
+
+curl -X POST -H "Content-Type: application/json" -d '{"type": "heart", "color": "pink", "content": "", "sender_name": "Mikkel", "receiever_name": "Bob"}' http://hostname.local:8000/set_message
+
+curl -X POST -H "Content-Type: application/json" -d '{"type": "smiley", "color": "yellow", "content": "happy", "sender_name": "Mikkel", "receiever_name": "Bob"}' http://hostname.local:8000/set_message</code></pre>
+<p>Alle beskeder som bliver modtaget bliver gemt i SQLite databasen messages.db og jeg kan tilgå beskederne via en API for endpoint '/api/get_messages'. På samme måde er endpoint '/set_message' også en del af API'en men i det her eksempel er API'en tydeligjort i endpoint for '/get_messages'.</p>
+<pre class="codehilite"><code>curl http://hostname.local:8000/api/get_messages</code></pre>
+</p>    
+<h2 id="flask-ui">Flask applikation med en brugergrænseflade for at sende beskeder <a class="headerlink" href="#flask-ui" title="Permanent link">&para;</a>
+</h2>
+<p>⏳ 30 min</p>
+<p>Vores Flask applikation fra før kører nu på localhost:8000 og nu vil vi gerne lave en Flask applikation som kører på localhost:5000 for at sende beskeder over netværket.</p>
+<pre class="codehilite"><code>cd Projects && mkdir smart-home-ui
+cd smart-home-ui
+touch app.py
+mkdir templates
+cd templates
+touch index.html
+cd ..
+ls</code></pre>
+<p>Nu har vi oprettet filen app.py i mappen smart-home-ui og filen index.html i mappen smart-home-ui/templates.</p>
+<p>Der er forskellige måder at bevæge os rundt på vores Raspberry Pi og finde frem til de rigtige filer. Vi kan bruge pwd til at se vores path, cd mappe-navn til at skifte mappe, ls for at se alle filer i en mappe, sudo nano filnavn.filtype for at åbne en fil og cd .. for at gå tilbage til mappen før i path.</p>
+<pre class="codehilite"><code>pwd
+cd templates
+sudo nano index.html
+cd ..
+ls
+sudo nano app.py</code></pre>
+<p>Gå ind på følgende GitHub repository og find projektkoden: <a href="https://github.com/miwnKEA/smart-home-ui" target="_blank">smart-home-ui</a>.</p>
+<p>Kopier projektkoden i filen app.py og skriv følgende i Terminalen og indsæt herefter koden og afslut med CTRL+X.</p>
+<pre class="codehilite"><code>sudo nano app.py</code></pre>
+<p>app.py indeholder en Flask applikation med en HTML-side index.html for endpoint '/' og et POST request for endpoint '/send_message'.</p>
+<pre><code class="language-python">from flask import Flask, render_template, request, jsonify
+import requests
+import json
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+@app.route('/send_message', methods=['POST'])
+def set_message():
+    # get data from POST request
+    receiver_host = request.form['receiver_host']
+    receiever_name = request.form['receiever_name']
+    sender_name = request.form['sender_name']
+    type = request.form['type']
+    color = request.form['color']
+    content = request.form['content']
+    
+    # dictionary with data
+    data = {
+        "type": type,
+        "color": color,
+        "content": content,
+        "sender_name": sender_name,
+        "receiever_name": receiever_name
+    }
+
+    # convert dictionary to JSON data
+    json_data = json.dumps(data)
+    print(json_data)
+    print(receiver_host)
+    # set HTTP headers to application/json
+    headers = {'Content-Type': 'application/json'}
+    # send POST request to host endpoint with JSON data and headers
+    response = requests.post('http://' + receiver_host + '/set_message', json=json_data, headers=headers)
+    print(response.text)
+    #print(response.json())
+    return jsonify({'status': 'Message set', 'type': type, 'color': color, 'message': content, 'sender_name': sender_name, 'sender_host': request.host, 'receiever_name': receiever_name, 'receiver_host': receiver_host})
+
+if __name__ == '__main__':
+    app.run(port=3000)
+</code></pre><br />
+<p>I mappen templates er der en index.html fil som indeholder følgende HTML kode.</p>
+<pre><code class="language-html">&lt;html&gt;
+
+&lt;head&gt;
+    &lt;title&gt;Smart Home UI&lt;/title&gt;
+&lt;/head&gt;
+    
+&lt;body&gt;
+    &lt;h1&gt;Velkommen til Smart Home UI&lt;/h1&gt;
+    &lt;p&gt;Udfyld formen for at sende en besked.&lt;/p&gt;
+    &lt;form action="/send_message" method="POST"&gt;
+        &lt;!-- lav labels og input for hostname, afsender, modtager, osv. --&gt;
+        &lt;label for="receiver_host"&gt;Hostname (for eksempel mikkelpi.local:8000):&lt;/label&gt;
+        &lt;input type="text" name="receiver_host" id="receiver_host" required&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for="receiever_name"&gt;Modtager (for eksempel Mikkel):&lt;/label&gt;
+        &lt;input type="text" name="receiever_name" id="receiever_name" required&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for="sender_name"&gt;Afsender (dit navn):&lt;/label&gt;
+        &lt;input type="text" name="sender_name" id="sender_name" required&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for ="type"&gt;Vælg type:&lt;/label&gt;
+        &lt;select name="type" id="type" required&gt;
+            &lt;option value="message"&gt;Besked&lt;/option&gt;
+            &lt;option value="heart"&gt;Hjerte&lt;/option&gt;
+            &lt;option value="smiley"&gt;Smiley&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;br /&gt;&lt;br /&gt;
+        &lt;label for="color"&gt;Vælg farve:&lt;/label&gt;
+        &lt;select name="color" id="color" required&gt;
+            &lt;option value="blue"&gt;Blå&lt;/option&gt;
+            &lt;option value="green"&gt;Grøn&lt;/option&gt;
+            &lt;option value="yellow"&gt;Gul&lt;/option&gt;
+            &lt;option value="red"&gt;Rød&lt;/option&gt;
+            &lt;option value="pink"&gt;Lyserød&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;br /&gt;
+        &lt;p&gt;Hvis du har valgt smiley skal besked indeholde "happy" eller "sad" som humør.&lt;/p&gt;
+        &lt;label for="content"&gt;Besked:&lt;/label&gt;
+        &lt;input type="text" name="content" id="content"&gt;
+        &lt;br /&gt;
+        &lt;br /&gt;
+        &lt;input type="submit" value="Submit"&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+    
+&lt;/html&gt;</code></pre><br />
+<p>Start Flask applikationen på port 3000 via din computer og tilgå den på localhost:3000.</p>
+<p>Både Raspberry Pi og computer skal være på det samme netværk for at Flask applikationenerne kan sende og modtager beskederne.</p>
+</article>
+</div>
+{% endblock %}
