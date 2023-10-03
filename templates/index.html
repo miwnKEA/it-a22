@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set pageDays = pageDays %}
+{% block content %}
+
+<div class="row">
+    <div class="one column"></div>
+    <article id="main" class="twelve columns">
+        <h1>{{ pageTitle }}</h1>
+        <p>{{ pageDescription }}</p>
+        <h2 id="undervisningsdage">Undervisningsdage <a class="headerlink" href="#undervisningsdage"
+                title="Permanent link">&para;</a></h2>
+        <ol>
+            {% for day in pageDays %}
+                {% if day[1] == 1 %}
+                <li><a href="{{ day[0] }}">{{ day[2] }}</a></li>
+                {% else %}
+                <li>{{ day[2] }}</li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+</div>
+
+{% endblock %}
